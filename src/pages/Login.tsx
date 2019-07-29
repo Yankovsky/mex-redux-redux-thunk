@@ -2,27 +2,22 @@ import * as React from 'react'
 import { RootState } from '../store'
 import { connect } from 'react-redux'
 import { login } from '../store/session/actions'
-import { AccessToken } from '../store/session/reducers'
-import { ThunkDispatch } from 'redux-thunk'
 
-interface State {
+const mapStateToProps = () => {
+  return (states: RootState) => {
+    return {
+      accessToken: states.session.accessToken
+    }
+  }
 }
 
-interface OwnProps {
+const mapDispatchToProps = {
+  login
 }
 
-interface DispatchProps {
-  login: (username: string, password: string) => void
-}
+type Props = ReturnType<ReturnType<typeof mapStateToProps>> & typeof mapDispatchToProps
 
-interface StateProps {
-  accessToken: AccessToken
-}
-
-type Props = StateProps & OwnProps & DispatchProps
-
-class Login extends React.Component<Props, State> {
-
+class Login extends React.Component<Props, {}> {
   constructor(prop:Props) {
     super(prop)
     this.state = {
@@ -37,7 +32,7 @@ class Login extends React.Component<Props, State> {
           {
             this.props.accessToken.accessToken && 'You are logged In!'
             ||
-            this.props.accessToken.isFetching && 'Faking Login in' 
+            this.props.accessToken.isFetching && 'Faking Login in'
             ||
             <button className="btn btn-primary" onClick={() => this.props.login('someusername', 'somepassword')}>
               Login
@@ -50,19 +45,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (states: RootState, ownProps: OwnProps): StateProps => {
-  return {
-    accessToken: states.session.accessToken
-  }
-}
-
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>, ownProps: OwnProps): DispatchProps => {
-  return {
-    login: async (username, password) => {
-      await dispatch(login(username, password))
-      console.log('Login completed [UI]')
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect<ReturnType<typeof mapStateToProps>, typeof mapDispatchToProps, {}, RootState>(mapStateToProps, mapDispatchToProps)(Login)
