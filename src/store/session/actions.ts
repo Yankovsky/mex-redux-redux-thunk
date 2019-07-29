@@ -23,9 +23,9 @@ export const isFetching = (isFetching: boolean): SetFetcing => {
 }
 
 // thunk action
-export const login = (username: string, password: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+export const login = (username: string, password: string) => {
   // Invoke API
-  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     return new Promise<void>((resolve) => {
       dispatch(isFetching(true))
       console.log('Login in progress')
